@@ -5,7 +5,7 @@ import java.util.function.Predicate;
 
 public class PredicateFactory {
 
-    public <T extends Comparable<T>> Predicate<T> buildPredicate(String operator, T threshold) {
+    public <T extends Comparable<T>> Predicate<T> build(String operator, T threshold) {
 
         return new Predicate<T>() {
             @Override

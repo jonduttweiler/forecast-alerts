@@ -25,8 +25,18 @@ public class ForecastAlertsApplication {
 	public static void main(String[] args) {
 		ApplicationContext context = SpringApplication.run(ForecastAlertsApplication.class, args);
 
+
+		Double tMax = 30d;
+		//Double wMax = 22.5d;/* Bee speed is 22.5km/h */
+		Double wMax = 5.5d;
+		Double sMax = 8d;
+
+
 		PredicateFactory predicateFactory = new PredicateFactory();
-		Predicate<Double> hotTemperature = predicateFactory.buildPredicate(">", new Double(30));
+		Predicate<Double> hotTemperature = predicateFactory.build(">", tMax);
+		Predicate<Double> windy = predicateFactory.build(">", wMax);
+		Predicate<Double> highSolarRadiation = predicateFactory.build(">", sMax);
+ 
 
 		// Put predicates in array of rules
 
@@ -38,10 +48,21 @@ public class ForecastAlertsApplication {
  		OpenWeatherMapForecast forecast = ows.getForecast(7, new Location(latitude, longitude));
 
 		forecast.daily.forEach(daily -> {
+
 			if(hotTemperature.test(daily.temp.max)) {
-				System.out.println("Alert for day "+Instant.ofEpochSecond(daily.dt)+" - temp max: "+daily.temp.max +" over threshold of 30C"); // quizas debamos tener un counter para ver que la condicion
+				System.out.println("Temperature alert for the day "+Instant.ofEpochSecond(daily.dt)+" - temp max: "+daily.temp.max +" over threshold of "+tMax+"°C"); // quizas debamos tener un counter para ver que la condicion
 
 			}
+			if(windy.test(daily.wind_speed)){
+				System.out.println("Windy alert for the day "+Instant.ofEpochSecond(daily.dt)+" - wind speed: "+daily.wind_speed+" over threshold of "+ wMax + " km/h");
+			}
+
+			if(highSolarRadiation.test(daily.uvi)){
+				System.out.println("Uv alert for the day "+Instant.ofEpochSecond(daily.dt)+" - UV index: "+daily.uvi+" over threshold of "+ sMax );
+			}
+
+
+
 		}); 
 
 	}
