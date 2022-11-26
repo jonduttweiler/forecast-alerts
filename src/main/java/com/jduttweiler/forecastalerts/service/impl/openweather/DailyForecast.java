@@ -22,6 +22,38 @@ public class DailyForecast{
     public double pop;
     public double rain;
     public double uvi;
+
+
+
+    public Double getValue(String key){
+        switch(key){
+            case "temp.max": {
+                return temp.max;
+            }
+            case "temp.min": {
+                return temp.min;
+            }
+            case "wind_speed": {
+                return wind_speed;
+            }
+            case "uvi": {
+                return uvi;
+            }
+            case "humidity": {
+                return (double) humidity;
+            }
+            case "pressure": {
+                return (double) pressure;
+            }
+        }
+
+
+
+
+        return null;
+    }
+
+
 }
 
 
