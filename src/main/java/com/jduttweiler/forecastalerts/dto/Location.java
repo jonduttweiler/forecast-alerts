@@ -2,27 +2,44 @@ package com.jduttweiler.forecastalerts.dto;
 
 public class Location {
 
-    private String latitude;
-    private String longitude;
+    private String name;
+    private double latitude;
+    private double longitude;
 
-    public Location(String latitude, String longitude) {
+    public Location(String name, double latitude, double longitude) {
+        this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
-    public String getLatitude() {
+
+    public Location(double latitude, double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
+    public double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(String latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
-    public String getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(String longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+    
 }

@@ -2,9 +2,9 @@ package com.jduttweiler.forecastalerts;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+
 import java.util.function.Predicate;
 
 import javax.transaction.Transactional;
@@ -47,40 +47,28 @@ public class ForecastAlertsApplication implements CommandLineRunner {
 
 		List<WeatherRule> rules = repo.findAll();
 
-		String latitude = "-31.91274985363325";
-		String longitude = "-61.400151850117595";
+		Location l1 = new Location("Colonia Belgrano", -31.91274985363325, -61.400151850117595);
+		Location l2 = new Location("Sauzalito", 	-24.429471054710707, -61.68369052591683);
+		Location l3 = new Location("Santa Victoria Este",-22.272539858681256, -62.712726537319696);
+		Location l4 = new Location("Filadelfia", -22.308442674644184, -60.083253973322854);
+		Location l5 = new Location("Tarija", -21.52028734274685, -64.72766254591924);
+		Location l6 = new Location("Villa Montes ", -21.2600046, -63.4580702);
+		Location l7 = new Location("Yacuiba ", -22.0227557, -63.6775234);
 
-		OpenWeatherMapForecast forecast = ows.getForecast(7, new Location(latitude, longitude));
 
-		checkOpenWeatherForecast(forecast, rules);
+		List<Location> locations = new ArrayList<>(Arrays.asList(l1,l2,l3,l4,l5, l6, l7));
+		locations.stream().forEach(location -> {
+			System.out.println("--------------");
+			System.out.println(location.getName());
+			OpenWeatherMapForecast forecast = ows.getForecast(7, location);
+			checkOpenWeatherForecast(forecast, rules);
+		});
+		
+
+
+
 
 	}
-
-	/*
-	 * private Map<Integer, List<Predicate<Double>>>
-	 * getPredicatesFromRules(List<WeatherRule> rules){
-	 * PredicateFactory predicateFactory = new PredicateFactory();
-	 * HashMap<Integer, List<Predicate<Double>>> predicates = new HashMap<>();
-	 * 
-	 * // Crear los predicados aca x fuera del bucle del forecast daily
-	 * rules.forEach(rule -> {
-	 * List<Predicate<Double>> rulePredicates = new ArrayList<>();
-	 * List<WeatherCondition> conditions = rule.getConditions();
-	 * // Obtener el predicado para la condicion y ver contra que variable va
-	 * 
-	 * for (WeatherCondition condition : conditions) {
-	 * // Make some with condition
-	 * String operator = condition.getOperator().toString();
-	 * Predicate<Double> p = predicateFactory.build(operator,
-	 * condition.getThreshold());
-	 * rulePredicates.add(p);
-	 * }
-	 * predicates.put(rule.getId(), rulePredicates);
-	 * });
-	 * return predicates;
-	 * }
-	 * 
-	 */
 
 	private void checkOpenWeatherForecast(OpenWeatherMapForecast forecast, List<WeatherRule> rules) {
 
@@ -89,18 +77,18 @@ public class ForecastAlertsApplication implements CommandLineRunner {
 			// check all rules against daily forecast
 			for (WeatherRule rule : rules) {
 				List<WeatherCondition> conditions = rule.getConditions();
-				for(WeatherCondition condition : conditions){
 
+				boolean ruleMatch = conditions.stream().allMatch(condition -> {
 					Predicate<Double> p = condition.buildPredicate();
 					String vPath = condition.getVariable(); //Variable path maybe should be a good idea to handle it externally
 					
 					Double forecastValue =  daily.getValue(vPath);
-					boolean conditionMatch = p.test(forecastValue);
-					if(conditionMatch){
-						System.out.println("Condition "+condition.getVariable()+" "+condition.getOperator().toString()+" "+condition.getThreshold() +" MATCH - forecast value "+ forecastValue);
-						
-					}
+					System.out.println(vPath+": "+forecastValue);
+					return p.test(forecastValue);
+				});
 
+				if(ruleMatch){
+					System.out.println("Rule ["+rule.getName()+"] match");
 				}
 			}
 
