@@ -16,11 +16,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Service("openWeatherMapService")
 public class OpenWeatherMapService extends ForecastService {
 
-    @Value("${openweathermap.appId}")
-    private String appId;
+    @Value("${openweathermap.appIds}")
+    private String appIds;
+
+    private int round = 0;
+
 
     private String getAppId() {
-        return appId; // TODO: Implement round robin
+        String[] ids = appIds.split(",");
+        int n = ids.length;
+        String current = ids[round];
+        round = (round + 1) % n;
+        return current;
     }
 
     @Override

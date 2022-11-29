@@ -1,2 +1,2 @@
 server.port=8081
-openweathermap.appId=c90d16acdccf84fb746dfae7dfcaa229
+openweathermap.appIds=apikey1, apikey2, apikey3

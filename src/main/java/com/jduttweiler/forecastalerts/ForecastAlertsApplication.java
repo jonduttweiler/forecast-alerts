@@ -54,9 +54,10 @@ public class ForecastAlertsApplication implements CommandLineRunner {
 		Location l5 = new Location("Tarija", -21.52028734274685, -64.72766254591924);
 		Location l6 = new Location("Villa Montes ", -21.2600046, -63.4580702);
 		Location l7 = new Location("Yacuiba ", -22.0227557, -63.6775234);
+		Location l8 = new Location("General Enrique Mosconi", -23.2166691, -62.2999992);
+			 	
 
-
-		List<Location> locations = new ArrayList<>(Arrays.asList(l1,l2,l3,l4,l5, l6, l7));
+		List<Location> locations = new ArrayList<>(Arrays.asList(l1,l2,l3,l4,l5, l6, l7, l8));
 		locations.stream().forEach(location -> {
 			System.out.println("--------------");
 			System.out.println(location.getName());
@@ -81,8 +82,8 @@ public class ForecastAlertsApplication implements CommandLineRunner {
 				boolean ruleMatch = conditions.stream().allMatch(condition -> {
 					Predicate<Double> p = condition.buildPredicate();
 					String vPath = condition.getVariable(); //Variable path maybe should be a good idea to handle it externally
-					
-					Double forecastValue =  daily.getValue(vPath);
+										
+					Double forecastValue =  daily.getValue(vPath); 
 					System.out.println(vPath+": "+forecastValue);
 					return p.test(forecastValue);
 				});
@@ -111,8 +112,8 @@ public class ForecastAlertsApplication implements CommandLineRunner {
 
 		// Put predicates in array of rules
 
-		String latitude = "-31.91274985363325";
-		String longitude = "-61.400151850117595";
+		double latitude = -31.91274985363325;
+		double longitude = -61.400151850117595;
 
 		OpenWeatherMapForecast forecast = ows.getForecast(7, new Location(latitude, longitude));
 
